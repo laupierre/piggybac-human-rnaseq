@@ -121,6 +121,67 @@ ggsave ("PCA plot.pdf")
 
 
 
+## Sample to sample correlation, see https://rockefelleruniversity.github.io/RU_RNAseq/presentations/singlepage/RU_RNAseq_p3.html
+
+sampleDists <- as.dist(1 - cor(log2 (counts(dds,normalized=TRUE)+1), method="pearson"))
+sampleDistMatrix <- as.matrix(sampleDists)
+
+library(RColorBrewer)
+blueColours <- brewer.pal(9, "Blues")
+colors <- colorRampPalette(rev(blueColours))(255)
+
+df <- as.data.frame(colData(dds)[,c("genotype","sample")])
+
+pdf ("Distance between samples plot.pdf")
+pheatmap(sampleDistMatrix, clustering_distance_rows = sampleDists, clustering_distance_cols = sampleDists, color = colors, annotation_row=df)
+dev.off()
+
+
+
+
+## sh contrast
+
+pheno.s <- pheno[grep ("DOX", pheno$genotype, invert=TRUE), ]
+pheno.s
+
+a.s <- a[ ,colnames (a) %in% pheno.s$sample]
+stopifnot (colnames (a.s) == pheno.s$sample)
+
+dds <- DESeqDataSetFromMatrix(countData = round (a.s), colData = pheno.s, design = ~ genotype)
+
+keep <- rowSums(counts(dds) >= 50) >= 3
+dds <- dds[keep,]
+dds
+
+dds <- DESeq(dds)
+res <- results(dds, contrast=c("genotype", "shPGBD5", "WT"))
+
+res <- merge (data.frame (res), round (counts (dds, normalized=TRUE)), by="row.names")
+res <- merge (res, annot, by.x="Row.names", by.y="Geneid")
+colnames (res)[1] <- "Geneid"
+res <- res[order (res$padj), ]
+
+## Sanity check
+res[res$gene_name == "PGBD5", ] 
+# not significant
+
+
+## Sample to sample correlation, see https://rockefelleruniversity.github.io/RU_RNAseq/presentations/singlepage/RU_RNAseq_p3.html
+
+sampleDists <- as.dist(1 - cor(log2 (counts(dds,normalized=TRUE)+1), method="pearson"))
+sampleDistMatrix <- as.matrix(sampleDists)
+
+library(RColorBrewer)
+blueColours <- brewer.pal(9, "Blues")
+colors <- colorRampPalette(rev(blueColours))(255)
+
+df <- as.data.frame(colData(dds)[,c("genotype","sample")])
+
+pdf ("Distance between samples plot.pdf")
+pheatmap(sampleDistMatrix, clustering_distance_rows = sampleDists, clustering_distance_cols = sampleDists, color = colors, annotation_row=df)
+dev.off()
+
+
 
 
 
