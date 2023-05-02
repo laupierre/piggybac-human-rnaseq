@@ -7,7 +7,7 @@ library (ggrepel)
 library (pheatmap)
 
 
-anno <- read.delim ("gencode.vM32.annotation.txt")
+anno <- read.delim ("gencode.v43.annotation.txt")
 anno <- anno[ ,grep ("transcript_id", colnames (anno), invert=TRUE)]
 anno <- unique (anno)
 
@@ -27,7 +27,6 @@ colnames (a) [colnames (a) == "gene_type.x"] <- "gene_type"
 
 annot <- a
 annot <- annot[ ,c("Geneid", "gene_name", "gene_type", "mgi_id", "external_gene_name", "description")]
-
 
 torm <- c("gene_name", "gene_type", "mgi_id", "external_gene_name", "description")
 a <- a[ ,!colnames (a) %in% torm]
