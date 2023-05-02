@@ -35,4 +35,50 @@ colnames (a) <- gsub ("star.", "", colnames (a))
 a <- a[ ,-1]
 
 
+pheno <- data.frame (matrix (nrow=dim (a)[2], ncol=2))
+colnames (pheno) <- c("sample", "genotype")
+row.names (pheno) <- pheno$sample <- colnames (a)
+pheno$genotype <- gsub ("_.*", "", pheno$sample)
+pheno$genotype [pheno$genotype == "PGBD5"] <- "shPGBD5" 
+
+
+
+## OE contrast
+
+pheno.s <- pheno[grep ("DOX", pheno$genotype), ]
+pheno.s
+
+a.s <- a[ ,colnames (a) %in% pheno.s$sample]
+stopifnot (colnames (a.s) == pheno.s$sample)
+
+dds <- DESeqDataSetFromMatrix(countData = round (a.s), colData = pheno.s, design = ~ genotype)
+
+keep <- rowSums(counts(dds) >= 10) >= 3
+dds <- dds[keep,]
+dds
+
+dds <- DESeq(dds)
+res <- results(dds, contrast=c("genotype", "PGBD5OEplusDOX", "CONTROLplusDOX"))
+
+res <- merge (data.frame (res), round (counts (dds, normalized=TRUE)), by="row.names")
+res <- merge (res, annot, by.x="Row.names", by.y="Geneid")
+colnames (res)[1] <- "Geneid"
+res <- res[order (res$padj), ]
+
+# Sanity check
+res[res$gene_name == "PGBD5", ] 
+## padj= 0.3889514
+
+
+
+
+
+
+
+
+
+
+
+
+
 
