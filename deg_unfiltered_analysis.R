@@ -67,7 +67,7 @@ res <- res[order (res$padj), ]
 
 # Sanity check
 res[res$gene_name == "PGBD5", ] 
-## padj= 0.3889514
+## padj= 0.3889514 !!!
 
 
 
