@@ -53,7 +53,7 @@ stopifnot (colnames (a.s) == pheno.s$sample)
 
 dds <- DESeqDataSetFromMatrix(countData = round (a.s), colData = pheno.s, design = ~ genotype)
 
-keep <- rowSums(counts(dds) >= 10) >= 3
+keep <- rowSums(counts(dds) >= 30) >= 3
 dds <- dds[keep,]
 dds
 
@@ -80,12 +80,16 @@ stopifnot (colnames (a.s) == pheno.s$sample)
 
 dds <- DESeqDataSetFromMatrix(countData = round (a.s), colData = pheno.s, design = ~ batch + genotype)
 
-keep <- rowSums(counts(dds) >= 10) >= 3
+keep <- rowSums(counts(dds) >= 30) >= 3
 dds <- dds[keep,]
 dds
 
 dds <- DESeq(dds)
 res <- results(dds)
+## MA plot
+res <- results(dds)
+plotMA(res, ylim=c(-2,2))
+
 # Wald test p-value: genotype PGBD5OEplusDOX vs CONTROLplusDOX 
 
 res <- merge (data.frame (res), round (counts (dds, normalized=TRUE)), by="row.names")
@@ -96,6 +100,28 @@ res <- res[order (res$padj), ]
 # Sanity check
 res[res$gene_name == "PGBD5", ] 
 # padj=0.02009412
+
+
+## PCA plot
+vsd <- vst(dds, blind=FALSE)
+pcaData <- plotPCA(vsd, intgroup=c("genotype", "sample"), returnData=TRUE)
+percentVar <- round(100 * attr(pcaData, "percentVar"))
+
+ggplot(pcaData, aes(PC1, PC2, color=genotype, label=sample)) +
+  		geom_point(size=3) +
+  		xlab(paste0("PC1: ",percentVar[1],"% variance")) +
+  		ylab(paste0("PC2: ",percentVar[2],"% variance")) + 
+  		geom_text_repel()  + 
+		  coord_fixed () 
+
+ggsave ("PCA plot.pdf")
+
+
+
+
+
+
+
 
 
 
