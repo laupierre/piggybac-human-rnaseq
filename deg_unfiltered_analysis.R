@@ -26,12 +26,12 @@ colnames (a) [colnames (a) == "gene_type.x"] <- "gene_type"
 
 
 annot <- a
-annot <- annot[ ,c("Geneid", "gene_name", "gene_type", "mgi_id", "external_gene_name", "description")]
+annot <- annot[ ,c("Geneid", "gene_name", "gene_type", "hgnc_id", "external_gene_name", "description")]
 
-torm <- c("gene_name", "gene_type", "mgi_id", "external_gene_name", "description")
+torm <- c("gene_name", "gene_type", "hgnc_id", "external_gene_name", "description")
 a <- a[ ,!colnames (a) %in% torm]
 row.names (a) <- a[ ,1]
-colnames (a) <- gsub ("star.IIT_X_", "", colnames (a))
+colnames (a) <- gsub ("star.", "", colnames (a))
 a <- a[ ,-1]
 
 
