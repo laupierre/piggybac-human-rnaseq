@@ -89,7 +89,7 @@ dds
 dds <- DESeq(dds)
 res <- results(dds)
 ## MA plot
-plotMA(res, ylim=c(-2,2))
+plotMA(res, ylim=c(-5,5))
 
 # Wald test p-value: genotype PGBD5OEplusDOX vs CONTROLplusDOX 
 
