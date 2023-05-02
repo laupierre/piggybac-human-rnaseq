@@ -53,7 +53,7 @@ stopifnot (colnames (a.s) == pheno.s$sample)
 
 dds <- DESeqDataSetFromMatrix(countData = round (a.s), colData = pheno.s, design = ~ genotype)
 
-keep <- rowSums(counts(dds) >= 30) >= 3
+keep <- rowSums(counts(dds) >= 50) >= 3
 dds <- dds[keep,]
 dds
 
@@ -72,6 +72,8 @@ res[res$gene_name == "PGBD5", ]
 
 
 ## OE paired contrast
+pheno.s <- pheno[grep ("DOX", pheno$genotype), ]
+pheno.s
 
 pheno.s$batch <- factor (c(1,2,3,2,1,3)) 
 
@@ -80,14 +82,13 @@ stopifnot (colnames (a.s) == pheno.s$sample)
 
 dds <- DESeqDataSetFromMatrix(countData = round (a.s), colData = pheno.s, design = ~ batch + genotype)
 
-keep <- rowSums(counts(dds) >= 30) >= 3
+keep <- rowSums(counts(dds) >= 50) >= 3
 dds <- dds[keep,]
 dds
 
 dds <- DESeq(dds)
 res <- results(dds)
 ## MA plot
-res <- results(dds)
 plotMA(res, ylim=c(-2,2))
 
 # Wald test p-value: genotype PGBD5OEplusDOX vs CONTROLplusDOX 
@@ -99,7 +100,7 @@ res <- res[order (res$padj), ]
 
 # Sanity check
 res[res$gene_name == "PGBD5", ] 
-# padj=0.02009412
+# padj=0.000475601
 
 
 ## PCA plot
