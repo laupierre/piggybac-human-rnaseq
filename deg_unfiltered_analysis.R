@@ -100,7 +100,7 @@ res <- res[order (res$padj), ]
 
 # Sanity check
 res[res$gene_name == "PGBD5", ] 
-# padj=0.000475601
+# padj=0.017
 
 
 ## PCA plot
