@@ -71,6 +71,36 @@ res[res$gene_name == "PGBD5", ]
 
 
 
+## OE paired contrast
+
+pheno.s$batch <- factor (c(1,2,3,2,1,3)) 
+
+a.s <- a[ ,colnames (a) %in% pheno.s$sample]
+stopifnot (colnames (a.s) == pheno.s$sample)
+
+dds <- DESeqDataSetFromMatrix(countData = round (a.s), colData = pheno.s, design = ~ batch + genotype)
+
+keep <- rowSums(counts(dds) >= 10) >= 3
+dds <- dds[keep,]
+dds
+
+dds <- DESeq(dds)
+res <- results(dds)
+# Wald test p-value: genotype PGBD5OEplusDOX vs CONTROLplusDOX 
+
+res <- merge (data.frame (res), round (counts (dds, normalized=TRUE)), by="row.names")
+res <- merge (res, annot, by.x="Row.names", by.y="Geneid")
+colnames (res)[1] <- "Geneid"
+res <- res[order (res$padj), ]
+
+# Sanity check
+res[res$gene_name == "PGBD5", ] 
+# padj=0.02009412
+
+
+
+
+
 
 
 
