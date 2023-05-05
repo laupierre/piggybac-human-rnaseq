@@ -19,7 +19,6 @@ dim (x$counts)
 
 celltype <- factor(gsub ("plus.*", "", gsub ("_plus.*", "", colnames (x$counts)) ) )
 #colnames (x$counts)
-#batch <- factor (c (1,2,1,2,1,1))
 batch <- factor (c (1,2,3,2,1,3))
 
 design <- model.matrix (~ batch + celltype) 
@@ -63,7 +62,7 @@ colnames (res)[1] <- "Geneid"
 #7311 2.645803 0.7687691 0.6803428         Up
 
 
-## annotation
+## gene annotation
 
 library(org.Hs.eg.db)
 #columns(org.Hs.eg.db)
