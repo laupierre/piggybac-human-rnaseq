@@ -117,7 +117,7 @@ dev.off()
 
 prev <- read.xlsx ("/Volumes/texas/iit_projects/devide/deg_unfiltered_piggybac_overexpression_limma.xlsx")
 prev <- merge (res, prev, by.x="gene_name", by.y="Geneid")
-plot (prev$log2FoldChange, prev$logFC)
+plot (prev$log2FoldChange, prev$logFC, col=ifelse (prev$adj.P.Val< 0.05 & prev$padj < 0.05, "red", "black"))
 abline (h=0)
 abline (v=0)
 cor (prev$log2FoldChange, prev$logFC, method="pearson")
