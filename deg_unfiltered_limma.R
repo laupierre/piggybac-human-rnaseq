@@ -112,7 +112,7 @@ write.xlsx (res, "deg_unfiltered_piggybac_overexpression_limma_new_pipeline.xlsx
 
 
 
-## Sanity check (with the old pipeline, the old pipeline and new IIT pipeline are highly correlated)
+## Sanity check (with the old pipeline: the old pipeline and the new IIT pipeline are highly correlated)
 
 prev <- read.xlsx ("/Volumes/texas/iit_projects/devide/deg_unfiltered_piggybac_overexpression_limma.xlsx")
 prev <- merge (res, prev, by.x="gene_name", by.y="Geneid")
