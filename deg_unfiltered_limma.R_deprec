@@ -74,6 +74,11 @@ idx <- match (res$Geneid, names (res2))
 res$Description <- as.vector (res2) [idx]
 
 res <- res[order (res$adj.P.Val), ]
+
+table (res[res$adj.P.Val < 0.05, ]$consistent)
+#Down   No   Up 
+#1205 1707 1056 
+
 write.xlsx (res, "deg_unfiltered_piggybac_overexpression_limma.xlsx", rowNames=F)
 
 
