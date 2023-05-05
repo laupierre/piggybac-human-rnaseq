@@ -72,7 +72,7 @@ v <- voomWithQualityWeights(x, design=design, plot=TRUE)
 vfit <- lmFit(v, design)
 efit <- eBayes(vfit, trend=TRUE)
 
-resall <- res <- topTable(efit,coef="celltypePGBD5OEplusDOX", n="inf")
+res <- topTable(efit,coef="celltypePGBD5OEplusDOX", n="inf")
 
 boxplot (res$logFC)
 abline (h=0)
@@ -91,12 +91,32 @@ res[res$gene_name == "PGBD5", ]
 #8571 ENSG00000177614.11 0.7560978 5.819697 10.92561 1.205759e-06 4.362904e-05
 
 
+## see individual paired log2 fold changes. These are not normalized values
+norm.exprs <- v$E
+norm.dif1 <- data.frame (D014= norm.exprs[ ,"PGBD5OEplusDOX_D0_14"] -  norm.exprs[ ,"CONTROLplusDOX_D0_14"])
+norm.dif2 <- data.frame (D001= norm.exprs[ ,"PGBD5OEplusDOX_D0.1"] -  norm.exprs[ ,"CONTROLplusDOX_D01_2"])
+norm.dif3 <- data.frame (D002= norm.exprs[ ,"PGBD5OEplusDOX_D0.2"] -  norm.exprs[ ,"CONTROLplusDOX_D02_2"])
+norm.dif <- cbind (norm.dif1, norm.dif2, norm.dif3)
+
+norm.dif$consistent <- "No"
+norm.dif$consistent [apply (norm.dif[ ,1:3], 1, function (x) all (x > 0) )] <- "Up"
+norm.dif$consistent [apply (norm.dif[ ,1:3], 1, function (x) all (x < 0) )] <- "Down"
+table (norm.dif$consistent)
+#Down   No   Up 
+#2042 6381 2794 
+
+res <- merge (res, norm.dif, by.x="Geneid", by.y="row.names")
+res <- res[ ,c(1:11, 13:16, 12)]
+res <- res[order (res$adj.P.Val), ]
+write.xlsx (res, "deg_unfiltered_piggybac_overexpression_limma_new_pipeline.xlsx", rowNames=F)
+
+
 
 ## Sanity check (with the old pipeline, the old pipeline and new IIT pipeline are highly correlated)
 
 prev <- read.xlsx ("/Volumes/texas/iit_projects/devide/deg_unfiltered_piggybac_overexpression_limma.xlsx")
 prev <- merge (res, prev, by.x="gene_name", by.y="Geneid")
-plot (prev$logFC.x, prev$logFC.y, col=ifelse (prev$adj.P.Val.x < 0.05 & prev$adj.P.Val.y < 0.05, "darkblue", "black"), xlab="new_limma", ylab="prev_limma")
+plot (prev$logFC.x, prev$logFC.y, col=ifelse (prev$adj.P.Val.x < 0.05 & prev$adj.P.Val.y < 0.05, "darkblue", "black"), xlab="new_pipe_limma", ylab="prev_pipe_limma")
 abline (h=0)
 abline (v=0)
 cor (prev$logFC.x, prev$logFC.y, method="pearson")
