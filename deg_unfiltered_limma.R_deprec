@@ -1,5 +1,6 @@
 library (edgeR)
 library (limma)
+library (openxlsx)
 
 # /Volumes/texas/iit_projects/devide
 counts <-  read.delim ("subread.human.collapsed.counts.txt", row.names=1)
@@ -61,6 +62,20 @@ colnames (res)[1] <- "Geneid"
 #         D014      D001      D002 consistent
 #7311 2.645803 0.7687691 0.6803428         Up
 
+
+## annotation
+
+library(org.Hs.eg.db)
+#columns(org.Hs.eg.db)
+
+symbols <- res$Geneid
+res2 <- mapIds(org.Hs.eg.db, symbols, 'GENENAME', 'SYMBOL')
+
+idx <- match (res$Geneid, names (res2))
+res$Description <- as.vector (res2) [idx]
+
+res <- res[order (res$adj.P.Val), ]
+write.xlsx (res, "deg_unfiltered_piggybac_overexpression_limma.xlsx", rowNames=F)
 
 
 
