@@ -1,4 +1,5 @@
 library (limma)
+library (edgeR)
 library (openxlsx)
 
 
@@ -44,11 +45,66 @@ pheno.s
 
 pheno.s$batch <- factor (c(1,2,3,2,1,3)) 
 
-a.s <- a[ ,colnames (a) %in% pheno.s$sample]
-stopifnot (colnames (a.s) == pheno.s$sample)
+counts <- a[ ,colnames (a) %in% pheno.s$sample]
+stopifnot (colnames (counts) == pheno.s$sample)
 
 
 ## limma chunk
+
+x <- DGEList(counts=counts) 
+
+# filter for cpm > 6 in at least 3 samples
+isexpr <- rowSums(cpm(x) > 6) >= 3
+x <- x[isexpr, ]
+dim (x$counts)
+
+
+## paired limma test (the paired factor is treated as a batch factor)
+
+celltype <- factor (pheno.s$genotype)
+#colnames (x$counts)
+batch <- factor (c (1,2,3,2,1,3))
+
+design <- model.matrix (~ batch + celltype) 
+
+v <- voomWithQualityWeights(x, design=design, plot=TRUE)
+## CONTROLplusDOX_D0_14_S5 and PGBD5OEplusDOX_D0_14_S6 is down-weigthed by limma
+vfit <- lmFit(v, design)
+efit <- eBayes(vfit, trend=TRUE)
+
+resall <- res <- topTable(efit,coef="celltypePGBD5OEplusDOX", n="inf")
+
+boxplot (res$logFC)
+abline (h=0)
+abline (h=1)
+abline (h=-1)
+
+anno <- read.delim ("gencode.v43.annotation.txt")
+anno <- anno[ ,grep ("transcript_id", colnames (anno), invert=TRUE)]
+anno <- unique (anno)
+
+res <- merge (res, anno, by.x="row.names", by.y="gene_id")
+colnames (res)[1] <- "Geneid"
+
+res[res$gene_name == "PGBD5", ]
+#                 Geneid     logFC  AveExpr        t      P.Value    adj.P.Val
+#8571 ENSG00000177614.11 0.7560978 5.819697 10.92561 1.205759e-06 4.362904e-05
+
+## Sanity check (with the old pipeline)
+
+
+prev <- read.xlsx ("/Volumes/texas/iit_projects/devide/deg_unfiltered_piggybac_overexpression_limma.xlsx")
+prev <- merge (res, prev, by.x="gene_name", by.y="Geneid")
+plot (prev$logFC.x, prev$logFC.y, col=ifelse (prev$adj.P.Val.x < 0.05 & prev$adj.P.Val.y < 0.05, "darkblue", "black"), xlab="new_limma", ylab="prev_limma")
+abline (h=0)
+abline (v=0)
+cor (prev$logFC.x, prev$logFC.y, method="pearson")
+# 0.99
+
+table (prev$adj.P.Val.x < 0.05)
+table (prev$adj.P.Val.y < 0.05)
+
+
 
 
 
