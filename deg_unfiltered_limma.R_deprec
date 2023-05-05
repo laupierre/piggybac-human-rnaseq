@@ -1,0 +1,14 @@
+library (edgeR)
+library (limma)
+
+
+counts <-  read.delim ("/Volumes/toshiba/devide/subread.human.collapsed.counts.txt", row.names=1)
+counts <- counts[,grep ("DOX", colnames (counts))]
+
+x <- DGEList(counts=counts) 
+
+# filter for cpm > 6 in at least 3 samples
+isexpr <- rowSums(cpm(x) > 6) >= 3
+x <- x[isexpr, ]
+dim (x$counts)
+#[1] 11945    15
