@@ -3,6 +3,7 @@ library (limma)
 library (openxlsx)
 
 # /Volumes/texas/iit_projects/devide
+# this is the collapse matrix from WGCNA (in the old pipeline)
 counts <-  read.delim ("subread.human.collapsed.counts.txt", row.names=1)
 counts <- counts[,grep ("DOX", colnames (counts))]
 
