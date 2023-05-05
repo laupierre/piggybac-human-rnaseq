@@ -24,6 +24,7 @@ batch <- factor (c (1,2,3,2,1,3))
 design <- model.matrix (~ batch + celltype) 
 
 v <- voomWithQualityWeights(x, design=design, plot=TRUE)
+## CONTROLplusDOX_D0_14_S5 and PGBD5OEplusDOX_D0_14_S6 is down-weigthed by limma
 vfit <- lmFit(v, design)
 efit <- eBayes(vfit, trend=TRUE)
 
