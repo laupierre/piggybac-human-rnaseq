@@ -122,7 +122,6 @@ abline (h=0)
 abline (v=0)
 cor (prev$log2FoldChange, prev$logFC, method="pearson")
 # 0.78
-head (prev)
 
 
 
