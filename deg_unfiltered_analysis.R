@@ -71,6 +71,9 @@ res <- merge (res, annot, by.x="Row.names", by.y="Geneid")
 colnames (res)[1] <- "Geneid"
 res <- res[order (res$padj), ]
 
+boxplot (res$log2FoldChange)
+abline (h=0)
+
 # Sanity check
 res[res$gene_name == "PGBD5", ] 
 # padj=0.017. significant
@@ -110,8 +113,22 @@ pheatmap(sampleDistMatrix, clustering_distance_rows = sampleDists, clustering_di
 dev.off()
 
 
+## Sanity check (with the old pipeline)
+
+prev <- read.xlsx ("/Volumes/texas/iit_projects/devide/deg_unfiltered_piggybac_overexpression_limma.xlsx")
+prev <- merge (res, prev, by.x="gene_name", by.y="Geneid")
+plot (prev$log2FoldChange, prev$logFC)
+abline (h=0)
+abline (v=0)
+cor (prev$log2FoldChange, prev$logFC, method="pearson")
+# 0.78
+head (prev)
 
 
+
+
+
+#################
 ## shRNA contrast
 
 pheno.s <- pheno[grep ("DOX", pheno$genotype, invert=TRUE), ]
