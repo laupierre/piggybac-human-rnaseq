@@ -46,6 +46,13 @@ norm.dif3 <- data.frame (D002= norm.exprs[ ,"PGBD5OEplusDOX_D0.2_S4"] -  norm.ex
 norm.dif <- cbind (norm.dif1, norm.dif2, norm.dif3)
 norm.dif <- norm.dif[row.names (norm.dif) %in% row.names (res.bak), ]
 
+norm.dif$consistent <- "No"
+norm.dif$consistent [apply (norm.dif[ ,1:3], 1, function (x) all (x > 0) )] <- "Up"
+norm.dif$consistent [apply (norm.dif[ ,1:3], 1, function (x) all (x < 0) )] <- "Down"
+table (norm.dif$consistent)
+#Down   No   Up 
+#2239 7083 2623 
+
 res <- merge (res, norm.dif, by="row.names")
 colnames (res)[1] <- "Geneid"
 
