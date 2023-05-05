@@ -81,6 +81,21 @@ res[res$gene_name == "PGBD5", ]
 write.xlsx (res, "piggybac_PB_overexpressionDOX_vs_CTRL_DOX_human_in-vitro.xlsx", rowNames=F)
 
 
+
+## Sanity check (with the old pipeline)
+
+prev <- read.xlsx ("/Volumes/texas/iit_projects/devide/deg_unfiltered_piggybac_overexpression_limma.xlsx")
+prev <- merge (res, prev, by.x="gene_name", by.y="Geneid")
+plot (prev$log2FoldChange, prev$logFC, col=ifelse (prev$padj < 0.05 & prev$adj.P.Val < 0.05, "darkblue", "black"), xlab="DESeq2", ylab="limma")
+abline (h=0)
+abline (v=0)
+cor (prev$log2FoldChange, prev$logFC, method="pearson")
+# 0.78
+
+table (prev$padj < 0.05)
+table (prev$adj.P.Val < 0.05)
+
+
 ## PCA plot
 vsd <- vst(dds, blind=FALSE)
 pcaData <- plotPCA(vsd, intgroup=c("genotype", "sample"), returnData=TRUE)
@@ -112,16 +127,6 @@ pdf ("Distance between samples plot.pdf")
 pheatmap(sampleDistMatrix, clustering_distance_rows = sampleDists, clustering_distance_cols = sampleDists, color = colors, annotation_row=df)
 dev.off()
 
-
-## Sanity check (with the old pipeline)
-
-prev <- read.xlsx ("/Volumes/texas/iit_projects/devide/deg_unfiltered_piggybac_overexpression_limma.xlsx")
-prev <- merge (res, prev, by.x="gene_name", by.y="Geneid")
-plot (prev$log2FoldChange, prev$logFC, col=ifelse (prev$adj.P.Val< 0.05 & prev$padj < 0.05, "red", "black"))
-abline (h=0)
-abline (v=0)
-cor (prev$log2FoldChange, prev$logFC, method="pearson")
-# 0.78
 
 
 
