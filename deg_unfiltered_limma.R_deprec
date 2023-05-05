@@ -44,7 +44,6 @@ norm.dif1 <- data.frame (D014= norm.exprs[ ,"PGBD5OEplusDOX_D0_14_S6"] -  norm.e
 norm.dif2 <- data.frame (D001= norm.exprs[ ,"PGBD5OEplusDOX_D0.1_S3"] -  norm.exprs[ ,"CONTROL_plus_DOX_D01_2_S1"])
 norm.dif3 <- data.frame (D002= norm.exprs[ ,"PGBD5OEplusDOX_D0.2_S4"] -  norm.exprs[ ,"CONTROLplusDOX_D02_2_S2"])
 norm.dif <- cbind (norm.dif1, norm.dif2, norm.dif3)
-norm.dif <- norm.dif[row.names (norm.dif) %in% row.names (res.bak), ]
 
 norm.dif$consistent <- "No"
 norm.dif$consistent [apply (norm.dif[ ,1:3], 1, function (x) all (x > 0) )] <- "Up"
@@ -57,6 +56,10 @@ res <- merge (res, norm.dif, by="row.names")
 colnames (res)[1] <- "Geneid"
 
 # res[res$Geneid == "PGBD5", ]
+#    Geneid     logFC  AveExpr        t      P.Value    adj.P.Val        B  
+7311  PGBD5 0.7317231 5.685673 10.19497 2.546092e-07 1.114032e-05 6.714891
+#         D014      D001      D002 consistent
+#7311 2.645803 0.7687691 0.6803428         Up
 
 
 
