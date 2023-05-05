@@ -90,8 +90,9 @@ res[res$gene_name == "PGBD5", ]
 #                 Geneid     logFC  AveExpr        t      P.Value    adj.P.Val
 #8571 ENSG00000177614.11 0.7560978 5.819697 10.92561 1.205759e-06 4.362904e-05
 
-## Sanity check (with the old pipeline)
 
+
+## Sanity check (with the old pipeline, the old pipeline and new IIT pipeline are highly correlated)
 
 prev <- read.xlsx ("/Volumes/texas/iit_projects/devide/deg_unfiltered_piggybac_overexpression_limma.xlsx")
 prev <- merge (res, prev, by.x="gene_name", by.y="Geneid")
