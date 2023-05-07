@@ -122,8 +122,8 @@ abline (v=0)
 cor (prev$logFC.x, prev$logFC.y, method="pearson")
 # 0.99
 
-table (prev$adj.P.Val.x < 0.05)
-table (prev$adj.P.Val.y < 0.05)
+
+
 
 
 
