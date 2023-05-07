@@ -105,7 +105,7 @@ res <- merge (resall, anno, by="gene_id")
 
 #res[res$gene_name == "PGBD5", ]
 
-## There are more genes in shPGBD5 vs CTRL (than vs shCTRL)
+## There are more genes in shPGBD5 vs CTRL (than vs shCTRL) and as much in the control contrast !
 table (res$adj.P.Val.shpgbvsctrl < 0.05)
 #FALSE  TRUE 
 # 6044  5266 
