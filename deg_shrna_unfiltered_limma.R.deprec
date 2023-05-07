@@ -1,1 +1,51 @@
+library (edgeR)
+library (limma)
+library (openxlsx)
+
+# /Volumes/texas/iit_projects/devide
+# this is the collapse matrix from WGCNA (in the old pipeline)
+counts <-  read.delim ("subread.human.collapsed.counts.txt", row.names=1)
+counts <- counts[,grep ("DOX", colnames (counts), invert=TRUE)]
+
+x <- DGEList(counts=counts) 
+
+# filter for cpm > 6 in at least 3 samples
+isexpr <- rowSums(cpm(x) > 6) >= 3
+x <- x[isexpr, ]
+dim (x$counts)
+# 12036     9
+
+
+## paired limma test (the paired factor is treated as a batch factor)
+
+celltype <- gsub ("_.*", "", colnames (x$counts))
+celltype[1:3] <- paste ("sh", celltype[1:3], sep="")
+celltype[7:9] <- "CONTROL"
+#colnames (x$counts)
+batch <- factor (c (5,6,9,5,6,9,5,6,9))
+
+design <- model.matrix (~ 0 + celltype + batch) 
+colnames (design) <- gsub ("celltype", "", colnames (design))
+
+contr.matrix <- makeContrasts (shpgbvsctrl = shPGBD5-CONTROL, shpgbdvsshctrl = shPGBD5-shCONTROL, shctrlvsctrl= shCONTROL-CONTROL, levels = colnames(design))
+
+
+v <- voomWithQualityWeights(x, design=design, plot=TRUE)
+vfit <- lmFit(v, design)
+vfit <- contrasts.fit(vfit, contrasts=contr.matrix)
+efit <- eBayes(vfit, trend=TRUE)
+
+res1 <- topTable(efit,coef=1,sort.by="P", n= Inf)
+res2 <- topTable(efit,coef=2,sort.by="P", n= Inf)
+res3 <- topTable(efit,coef=3,sort.by="P", n= Inf)
+
+res1[row.names (res1) == "PGBD5", ]
+#           logFC  AveExpr         t    P.Value adj.P.Val        B
+#PGBD5 -0.1780329 5.154174 -2.082332 0.06144033 0.1186801 -4.86361
+res2[row.names (res2) == "PGBD5", ]
+#           logFC  AveExpr         t    P.Value adj.P.Val         B
+#PGBD5 -0.2129823 5.154174 -2.833154 0.01627443 0.1223274 -3.315688
+res3[row.names (res3) == "PGBD5", ]
+#           logFC  AveExpr         t   P.Value adj.P.Val         B
+#PGBD5 0.03494937 5.154174 0.4248097 0.6791627 0.7676216 -6.537119
 
