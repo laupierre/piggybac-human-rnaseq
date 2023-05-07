@@ -39,6 +39,8 @@ res1 <- topTable(efit,coef=1,sort.by="P", n= Inf)
 res2 <- topTable(efit,coef=2,sort.by="P", n= Inf)
 res3 <- topTable(efit,coef=3,sort.by="P", n= Inf)
 
+
+## PGBD5 is not significant !
 res1[row.names (res1) == "PGBD5", ]
 #           logFC  AveExpr         t    P.Value adj.P.Val        B
 #PGBD5 -0.1780329 5.154174 -2.082332 0.06144033 0.1186801 -4.86361
@@ -48,4 +50,14 @@ res2[row.names (res2) == "PGBD5", ]
 res3[row.names (res3) == "PGBD5", ]
 #           logFC  AveExpr         t   P.Value adj.P.Val         B
 #PGBD5 0.03494937 5.154174 0.4248097 0.6791627 0.7676216 -6.537119
+
+table (res1$adj.P.Val < 0.05)
+#FALSE  TRUE 
+# 7461  4575 
+table (res2$adj.P.Val < 0.05)
+#FALSE  TRUE 
+#11536   500 
+table (res3$adj.P.Val < 0.05)
+#FALSE  TRUE 
+# 8511  3525
 
