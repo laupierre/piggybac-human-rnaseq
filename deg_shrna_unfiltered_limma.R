@@ -116,6 +116,7 @@ table (res$adj.P.Val.shctrolvsctrl < 0.05)
 #FALSE  TRUE 
 # 6974  4336
 
+write.xlsx (res, "deg_unfiltered_piggybac_shrna_hesc_limma_new_pipeline.xlsx", rowNames=F)
 
 
 
