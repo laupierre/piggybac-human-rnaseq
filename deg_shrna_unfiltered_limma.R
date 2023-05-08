@@ -103,6 +103,7 @@ colnames (resall)[1] <- "gene_id"
 resall <- merge (resall, res3, by.x="gene_id", by.y="row.names")
 colnames (resall)[1] <- "gene_id"
 res <- merge (resall, anno, by="gene_id")
+res <- res[order (res$adj.P.Val.shpgbvsctrl), ]
 
 #res[res$gene_name == "PGBD5", ]
 
