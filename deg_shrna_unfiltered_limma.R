@@ -122,6 +122,35 @@ write.xlsx (res, "deg_unfiltered_piggybac_shrna_hesc_limma_new_pipeline.xlsx", r
 
 
 
+## Comparison of contrasts
+par (mfrow=c(2,1))
+res.s <- res[res$adj.P.Val.shpgbvsctrl < 0.05, ]
+
+plot (res.s$logFC.shpgbvsctrl, res.s$logFC.shpgbvsshctrl, xlab="shPGBD5 vs CTRL", ylab="shPGBD5 vs shCTRL", main="significant shPGBD5 vs CTRL genes", xlim=c(-3,3), ylim=c(-3,3))
+abline (h=0)
+abline (v=0)
+abline (0,1, col="red")
+
+plot (res.s$logFC.shpgbvsctrl, res.s$logFC.shctrolvsctrl, xlab="shPGBD5 vs CTRL", ylab="shCTRL vs CTRL", main="significant shPGBD5 vs CTRL genes", xlim=c(-3,3), ylim=c(-3,3))
+abline (h=0)
+abline (v=0)
+abline (0,1, col="red")
+
+
+par (mfrow=c(2,1))
+res.s <- res[res$adj.P.Val.shpgbvsshctrl < 0.05, ]
+
+plot (res.s$logFC.shpgbvsctrl, res.s$logFC.shpgbvsshctrl, xlab="shPGBD5 vs CTRL", ylab="shPGBD5 vs shCTRL", main="significant shPGBD5 vs shCTRL genes", xlim=c(-3,3), ylim=c(-3,3))
+abline (h=0)
+abline (v=0)
+abline (0,1, col="red")
+
+plot (res.s$logFC.shpgbvsctrl, res.s$logFC.shctrolvsctrl, xlab="shPGBD5 vs CTRL", ylab="shCTRL vs CTRL", main="significant shPGBD5 vs shCTRL genes", xlim=c(-3,3), ylim=c(-3,3))
+abline (h=0)
+abline (v=0)
+abline (0,1, col="red")
+
+
 
 
 
